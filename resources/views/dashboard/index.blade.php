@@ -168,14 +168,14 @@
                     <i class="bi bi-sun text-warning me-3" style="font-size: 1.5rem;"></i>
                     <div>
                         <strong>Sesi Pagi</strong>
-                        <div class="text-muted small">08:00 - 17:00</div>
+                        <div class="text-muted small">08:00 - 16:00</div>
                     </div>
                 </div>
                 <div class="d-flex align-items-center mb-3 p-3 rounded-3" style="background: #eff6ff;">
                     <i class="bi bi-moon-stars text-primary me-3" style="font-size: 1.5rem;"></i>
                     <div>
                         <strong>Sesi Malam</strong>
-                        <div class="text-muted small">18:00 - 23:00</div>
+                        <div class="text-muted small">17:00 - 23:00</div>
                     </div>
                 </div>
                 <hr>

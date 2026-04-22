@@ -49,11 +49,35 @@
                             <div class="fw-semibold">{{ $booking->jam }}</div>
                         </div>
                         <div class="col-4">
-                            <small class="text-muted">Total Bayar</small>
+                            <small class="text-muted">Total Harga</small>
+                            <div class="fw-bold text-success" style="font-size: 1.1rem;">
+                                Rp {{ number_format($booking->total_price ?? $booking->harga, 0, ',', '.') }}
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <small class="text-muted">Tipe Bayar</small>
+                            <div class="fw-semibold text-uppercase">{{ $booking->payment_type ?? 'lunas' }}</div>
+                        </div>
+                        <div class="col-4">
+                            <small class="text-muted">Nominal Bayar</small>
                             <div class="fw-bold text-primary" style="font-size: 1.2rem;">
                                 Rp {{ number_format($booking->harga, 0, ',', '.') }}
                             </div>
                         </div>
+                    </div>
+                </div>
+
+                <div class="alert alert-warning d-flex align-items-start mb-3" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2 mt-1"></i>
+                    <div>
+                        <strong>Perhatian:</strong> Booking yang sudah dibuat tidak dapat dibatalkan.
+                    </div>
+                </div>
+
+                <div class="alert alert-info d-flex align-items-start mb-4" role="alert">
+                    <i class="bi bi-camera-fill me-2 mt-1"></i>
+                    <div>
+                        <strong>Wajib screenshot bukti pembayaran</strong> untuk berjaga-jaga jika sistem gagal mengirim notifikasi ke admin.
                     </div>
                 </div>
 

@@ -24,6 +24,13 @@
     </div>
 @endif
 
+<div class="alert alert-warning d-flex align-items-start mb-4" role="alert">
+    <i class="bi bi-exclamation-triangle-fill me-2 mt-1"></i>
+    <div>
+        <strong>Perhatian:</strong> Booking yang sudah dibuat tidak dapat dibatalkan.
+    </div>
+</div>
+
 {{-- Pilih Tanggal --}}
 <div class="card mb-4">
     <div class="card-body p-4">
@@ -76,8 +83,7 @@
                     $isBooked = isset($bookedSlots[$lapangan->id][$jam]);
                     $namaPelanggan = $isBooked ? $bookedSlots[$lapangan->id][$jam] : null;
                     $jamAngka = (int) substr($jam, 0, 2);
-                    $harga = ($jamAngka <= 17) ? $lapangan->harga_pagi : $lapangan->harga_malam;
-                    $sesi = ($jamAngka <= 17) ? 'Pagi' : 'Malam';
+                    $harga = ($jamAngka < 17) ? $lapangan->harga_pagi : $lapangan->harga_malam;
                 @endphp
                 <div class="col-xl-2 col-lg-3 col-md-3 col-4">
                     @if($isBooked)

@@ -28,6 +28,7 @@
                         <i class="bi bi-calendar-check"></i> Booking
                     </a>
                 </li>
+                
 
                 {{-- Menu khusus admin (hanya muncul jika sudah login) --}}
                 @auth
@@ -61,14 +62,6 @@
                                 <i class="bi bi-box-arrow-right"></i> Logout
                             </button>
                         </form>
-                    </li>
-                @else
-                    {{-- Tombol Login (hanya muncul jika belum login) --}}
-                    <li class="nav-item ms-lg-2">
-                        <a class="nav-link {{ request()->is('login') ? 'active' : '' }}" href="/login"
-                           style="border: 1px solid rgba(255,255,255,0.3); border-radius: 8px;">
-                            <i class="bi bi-box-arrow-in-right"></i> Login Admin
-                        </a>
                     </li>
                 @endauth
 

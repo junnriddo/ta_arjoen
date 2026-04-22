@@ -49,8 +49,18 @@
                             <div class="fw-semibold">{{ $booking->jam }}</div>
                         </div>
                         <div class="col-4">
-                            <small class="text-muted">Harga</small>
+                            <small class="text-muted">Total Harga</small>
                             <div class="fw-bold text-success" style="font-size: 1.1rem;">
+                                Rp {{ number_format($booking->total_price ?? $booking->harga, 0, ',', '.') }}
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <small class="text-muted">Tipe Bayar</small>
+                            <div class="fw-semibold text-uppercase">{{ $booking->payment_type ?? 'lunas' }}</div>
+                        </div>
+                        <div class="col-4">
+                            <small class="text-muted">Nominal Bayar</small>
+                            <div class="fw-bold text-primary" style="font-size: 1.1rem;">
                                 Rp {{ number_format($booking->harga, 0, ',', '.') }}
                             </div>
                         </div>

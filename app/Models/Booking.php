@@ -18,6 +18,8 @@ class Booking extends Model
         'tanggal',
         'jam',
         'harga',
+        'total_price',
+        'payment_type',
         'status',
         'snap_token',
         'payment_status',

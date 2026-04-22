@@ -41,16 +41,33 @@
                             <small class="text-muted">Tanggal</small>
                             <div class="fw-semibold">{{ \Carbon\Carbon::parse($tanggal)->translatedFormat('d F Y') }}</div>
                         </div>
-                        <div class="col-3 mt-2">
-                            <small class="text-muted">Jam</small>
-                            <div class="fw-semibold">{{ $jam }}</div>
+                        <div class="col-6 mt-2">
+                            <small class="text-muted">Rentang Jam</small>
+                            <div class="fw-semibold" id="ringkasan-jam">{{ $jamMulai }} - {{ $jamSelesai }}</div>
                         </div>
-                        <div class="col-3 mt-2">
-                            <small class="text-muted">Harga</small>
+                        <div class="col-6 mt-2">
+                            <small class="text-muted">Total Harga</small>
                             <div class="fw-bold text-success" style="font-size: 1.1rem;">
-                                Rp {{ number_format($harga, 0, ',', '.') }}
+                                <span id="ringkasan-total">Rp {{ number_format($harga, 0, ',', '.') }}</span>
                             </div>
                         </div>
+                        <div class="col-6 mt-2">
+                            <small class="text-muted">Tipe Pembayaran</small>
+                            <div class="fw-semibold" id="ringkasan-payment-type">Lunas</div>
+                        </div>
+                        <div class="col-6 mt-2">
+                            <small class="text-muted">Nominal Bayar Sekarang</small>
+                            <div class="fw-bold text-primary" style="font-size: 1.1rem;">
+                                <span id="ringkasan-payable">Rp {{ number_format($harga, 0, ',', '.') }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert alert-warning d-flex align-items-start mb-4" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2 mt-1"></i>
+                    <div>
+                        <strong>Perhatian:</strong> Booking yang sudah dibuat tidak dapat dibatalkan.
                     </div>
                 </div>
 
@@ -80,7 +97,48 @@
 
                     <input type="hidden" name="lapangan_id" value="{{ $lapangan->id }}">
                     <input type="hidden" name="tanggal" value="{{ $tanggal }}">
-                    <input type="hidden" name="jam" value="{{ $jam }}">
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-clock me-1"></i> Jam Mulai <span class="text-danger">*</span>
+                            </label>
+                            <select name="jam_mulai" id="jam_mulai" class="form-select form-select-lg @error('jam_mulai') is-invalid @enderror" required>
+                                @for($hour = 8; $hour <= 22; $hour++)
+                                    @php $slot = sprintf('%02d:00', $hour); @endphp
+                                    <option value="{{ $slot }}" {{ old('jam_mulai', $jamMulai) === $slot ? 'selected' : '' }}>{{ $slot }}</option>
+                                @endfor
+                            </select>
+                            @error('jam_mulai')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-clock-history me-1"></i> Jam Selesai <span class="text-danger">*</span>
+                            </label>
+                            <select name="jam_selesai" id="jam_selesai" class="form-select form-select-lg @error('jam_selesai') is-invalid @enderror" required>
+                                {{-- diisi via JS sesuai jam mulai --}}
+                            </select>
+                            @error('jam_selesai')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            <i class="bi bi-wallet2 me-1"></i> Tipe Pembayaran <span class="text-danger">*</span>
+                        </label>
+                        <select name="payment_type" id="payment_type" class="form-select form-select-lg @error('payment_type') is-invalid @enderror" required>
+                            <option value="lunas" {{ old('payment_type', 'lunas') === 'lunas' ? 'selected' : '' }}>Lunas (100%)</option>
+                            <option value="dp" {{ old('payment_type') === 'dp' ? 'selected' : '' }}>DP (30%)</option>
+                        </select>
+                        @error('payment_type')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
 
                     <div class="mb-3">
                         <label class="form-label fw-semibold">
@@ -119,5 +177,82 @@
 
     </div>
 </div>
+
+@php
+    $hargaPagi = (int) $lapangan->harga_pagi;
+    $hargaMalam = (int) $lapangan->harga_malam;
+@endphp
+
+<script>
+    (function () {
+        const jamMulai = document.getElementById('jam_mulai');
+        const jamSelesai = document.getElementById('jam_selesai');
+        const paymentType = document.getElementById('payment_type');
+
+        const ringkasanJam = document.getElementById('ringkasan-jam');
+        const ringkasanTotal = document.getElementById('ringkasan-total');
+        const ringkasanPayable = document.getElementById('ringkasan-payable');
+        const ringkasanPaymentType = document.getElementById('ringkasan-payment-type');
+
+        const hargaPagi = {{ $hargaPagi }};
+        const hargaMalam = {{ $hargaMalam }};
+        const oldJamSelesai = @json(old('jam_selesai', $jamSelesai));
+
+        function toHour(time) {
+            return parseInt(time.substring(0, 2), 10);
+        }
+
+        function formatRupiah(number) {
+            return 'Rp ' + new Intl.NumberFormat('id-ID').format(number);
+        }
+
+        function refillJamSelesai() {
+            const start = toHour(jamMulai.value);
+            jamSelesai.innerHTML = '';
+
+            for (let hour = start + 1; hour <= 23; hour++) {
+                const value = String(hour).padStart(2, '0') + ':00';
+                const option = document.createElement('option');
+                option.value = value;
+                option.textContent = value;
+                jamSelesai.appendChild(option);
+            }
+
+            const canUseOld = Array.from(jamSelesai.options).some(opt => opt.value === oldJamSelesai);
+            jamSelesai.value = canUseOld ? oldJamSelesai : jamSelesai.options[0].value;
+        }
+
+        function calculateTotal(startHour, endHour) {
+            let total = 0;
+            for (let hour = startHour; hour < endHour; hour++) {
+                total += (hour < 17) ? hargaPagi : hargaMalam;
+            }
+            return total;
+        }
+
+        function updateRingkasan() {
+            const start = toHour(jamMulai.value);
+            const end = toHour(jamSelesai.value);
+            const total = calculateTotal(start, end);
+            const payable = paymentType.value === 'dp' ? Math.round(total * 0.3) : total;
+
+            ringkasanJam.textContent = jamMulai.value + ' - ' + jamSelesai.value;
+            ringkasanTotal.textContent = formatRupiah(total);
+            ringkasanPayable.textContent = formatRupiah(payable);
+            ringkasanPaymentType.textContent = paymentType.value === 'dp' ? 'DP (30%)' : 'Lunas (100%)';
+        }
+
+        refillJamSelesai();
+        updateRingkasan();
+
+        jamMulai.addEventListener('change', function () {
+            refillJamSelesai();
+            updateRingkasan();
+        });
+
+        jamSelesai.addEventListener('change', updateRingkasan);
+        paymentType.addEventListener('change', updateRingkasan);
+    })();
+</script>
 
 @endsection

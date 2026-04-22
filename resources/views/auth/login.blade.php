@@ -39,7 +39,7 @@
                 @endif
 
                 {{-- Form Login --}}
-                <form method="POST" action="/login">
+                <form method="POST" action="/admin">
                     @csrf
 
                     <div class="mb-3">

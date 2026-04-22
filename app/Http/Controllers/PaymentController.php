@@ -40,7 +40,7 @@ class PaymentController extends Controller
                 $params = [
                     'transaction_details' => [
                         'order_id'     => 'JUNE-' . $booking->id . '-' . time(),
-                        'gross_amount' => (int) $booking->harga,
+                        'gross_amount' => (int) ($booking->harga ?? 0),
                     ],
                     'customer_details' => [
                         'first_name' => $booking->nama_pelanggan,
@@ -49,9 +49,12 @@ class PaymentController extends Controller
                     'item_details' => [
                         [
                             'id'       => $booking->lapangan_id,
-                            'price'    => (int) $booking->harga,
+                            'price'    => (int) ($booking->harga ?? 0),
                             'quantity' => 1,
-                            'name'     => $booking->lapangan->nama_lapangan . ' - ' . $booking->jam . ' (' . $booking->tanggal . ')',
+                            'name'     => $booking->lapangan->nama_lapangan
+                                . ' - ' . $booking->jam
+                                . ' (' . $booking->tanggal . ')'
+                                . ' - ' . strtoupper($booking->payment_type ?? 'lunas'),
                         ],
                     ],
                 ];

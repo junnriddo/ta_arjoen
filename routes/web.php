@@ -45,8 +45,9 @@ Route::post('/midtrans/callback', [MidtransWebhookController::class, 'callback']
 // LOGIN & LOGOUT
 // ============================================
 
-Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-Route::post('/login', [AuthController::class, 'login']);
+Route::redirect('/login', '/admin');
+Route::get('/admin', [AuthController::class, 'showLogin'])->name('login');
+Route::post('/admin', [AuthController::class, 'login'])->name('admin.login');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // ============================================

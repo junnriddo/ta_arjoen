@@ -179,14 +179,14 @@
                     <div class="col-6">
                         <div class="p-3 rounded-3 text-center" style="background: #f0fdf4;">
                             <i class="bi bi-sun text-warning"></i>
-                            <div class="small text-muted mt-1">Pagi (08-17)</div>
+                            <div class="small text-muted mt-1">Pagi (08-16)</div>
                             <div class="fw-bold text-success">Rp {{ number_format($l->harga_pagi, 0, ',', '.') }}</div>
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="p-3 rounded-3 text-center" style="background: #eff6ff;">
                             <i class="bi bi-moon-stars text-primary"></i>
-                            <div class="small text-muted mt-1">Malam (18-23)</div>
+                            <div class="small text-muted mt-1">Malam (17-23)</div>
                             <div class="fw-bold text-primary">Rp {{ number_format($l->harga_malam, 0, ',', '.') }}</div>
                         </div>
                     </div>
